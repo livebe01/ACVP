@@ -1,0 +1,2688 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft ">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>ACVP SHA3 and SHAKE JSON Specification</title>
+<meta content="Christopher Celi" name="author">
+<meta content="xml2rfc 3.7.0" name="generator">
+<meta content="draft-ietf-acvp-sub-sha3-01" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.7.0
+    Python 3.7.3
+    appdirs 1.4.4
+    ConfigArgParse 1.4
+    google-i18n-address 2.4.0
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 2.11.3
+    kitchen 1.2.6
+    lxml 4.6.3
+    pycountry 20.7.3
+    pyflakes 2.3.1
+    PyYAML 5.4.1
+    requests 2.25.1
+    setuptools 56.0.0
+    six 1.15.0
+-->
+<link href="draft-celi-acvp-sha3.rfc.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necssary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre, code {
+  background-color: #f9f9f9;
+  font-family: 'Roboto Mono', monospace;
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: "Noto Sans",Arial,Helvetica,sans-serif;
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The follwing is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre, code {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+pre.sourcecode,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact informatio look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: lower-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background sligthtly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: avoid-page;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottim margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the comact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div:first-child > pre.sourcecode,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">async function addMetadata(){try{const e=document.styleSheets[0].cssRules;for(let t=0;t<e.length;t++)if(/#identifiers/.exec(e[t].selectorText)){const a=e[t].cssText.replace("#identifiers","#external-updates");document.styleSheets[0].insertRule(a,document.styleSheets[0].cssRules.length)}}catch(e){console.log(e)}const e=document.getElementById("external-metadata");if(e)try{var t,a="",o=function(e){const t=document.getElementsByTagName("meta");for(let a=0;a<t.length;a++)if(t[a].getAttribute("name")===e)return t[a].getAttribute("content");return""}("rfc.number");if(o){t="https://www.rfc-editor.org/rfc/rfc"+o+".json";try{const e=await fetch(t);a=await e.json()}catch(e){t=document.URL.indexOf("html")>=0?document.URL.replace(/html$/,"json"):document.URL+".json";const o=await fetch(t);a=await o.json()}}if(!a)return;e.style.display="block";const s="",d="https://datatracker.ietf.org/doc",n="https://datatracker.ietf.org/ipr/search",c="https://www.rfc-editor.org/info",l=a.doc_id.toLowerCase(),i=a.doc_id.slice(0,3).toLowerCase(),f=a.doc_id.slice(3).replace(/^0+/,""),u={status:"Status",obsoletes:"Obsoletes",obsoleted_by:"Obsoleted By",updates:"Updates",updated_by:"Updated By",see_also:"See Also",errata_url:"Errata"};let h="<dl style='overflow:hidden' id='external-updates'>";["status","obsoletes","obsoleted_by","updates","updated_by","see_also","errata_url"].forEach(e=>{if("status"==e){a[e]=a[e].toLowerCase();var t=a[e].split(" "),o=t.length,w="",p=1;for(let e=0;e<o;e++)p<o?w=w+r(t[e])+" ":w+=r(t[e]),p++;a[e]=w}else if("obsoletes"==e||"obsoleted_by"==e||"updates"==e||"updated_by"==e){var g,m="",b=1;g=a[e].length;for(let t=0;t<g;t++)a[e][t]&&(a[e][t]=String(a[e][t]).toLowerCase(),m=b<g?m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>, ":m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>",b++);a[e]=m}else if("see_also"==e){var y,L="",C=1;y=a[e].length;for(let t=0;t<y;t++)if(a[e][t]){a[e][t]=String(a[e][t]);var _=a[e][t].slice(0,3),v=a[e][t].slice(3).replace(/^0+/,"");L=C<y?"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>, ":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>, ":"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>",C++}a[e]=L}else if("errata_url"==e){var R="";R=a[e]?R+"<a href='"+a[e]+"'>Errata exist</a> | <a href='"+d+"/"+l+"'>Datatracker</a>| <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>":"<a href='"+d+"/"+l+"'>Datatracker</a> | <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>",a[e]=R}""!=a[e]?"Errata"==u[e]?h+=`<dt>More info:</dt><dd>${a[e]}</dd>`:h+=`<dt>${u[e]}:</dt><dd>${a[e]}</dd>`:"Errata"==u[e]&&(h+=`<dt>More info:</dt><dd>${a[e]}</dd>`)}),h+="</dl>",e.innerHTML=h}catch(e){console.log(e)}else console.log("Could not locate metadata <div> element");function r(e){return e.charAt(0).toUpperCase()+e.slice(1)}}window.removeEventListener("load",addMetadata),window.addEventListener("load",addMetadata);</script>
+</head>
+<body>
+<script src="metadata.min.js"></script>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">ACVP SHA3</td>
+<td class="right">April 2021</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Celi</td>
+<td class="center">Expires 18 October 2021</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Network Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-acvp-sub-sha3-01</dd>
+<dt class="label-">:</dt>
+<dd></dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2021-04-16" class="published">16 April 2021</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Informational</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2021-10-18">18 October 2021</time></dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">C. Celi, <span class="editor">Ed.</span>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">ACVP SHA3 and SHAKE JSON Specification</h1>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 18 October 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2021 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-acknowledgements" class="xref">Acknowledgements</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="xref">2</a>.  <a href="#name-abstract" class="xref">Abstract</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="xref">3</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-conventions" class="xref">Conventions</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-notation-conventions" class="xref">Notation conventions</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-terms-and-definitions" class="xref">Terms and Definitions</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="xref">4.2.1</a>.  <a href="#name-prompt" class="xref">Prompt</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.2">
+                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="xref">4.2.2</a>.  <a href="#name-registration" class="xref">Registration</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.3">
+                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="xref">4.2.3</a>.  <a href="#name-response" class="xref">Response</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.4">
+                    <p id="section-toc.1-1.4.2.2.2.4.1"><a href="#section-4.2.4" class="xref">4.2.4</a>.  <a href="#name-test-case" class="xref">Test Case</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.5">
+                    <p id="section-toc.1-1.4.2.2.2.5.1"><a href="#section-4.2.5" class="xref">4.2.5</a>.  <a href="#name-test-group" class="xref">Test Group</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.6">
+                    <p id="section-toc.1-1.4.2.2.2.6.1"><a href="#section-4.2.6" class="xref">4.2.6</a>.  <a href="#name-test-vector-set" class="xref">Test Vector Set</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.4.2.2.2.7">
+                    <p id="section-toc.1-1.4.2.2.2.7.1"><a href="#section-4.2.7" class="xref">4.2.7</a>.  <a href="#name-validation" class="xref">Validation</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-supported-hash-algorithms" class="xref">Supported Hash Algorithms</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-test-types-and-test-coverag" class="xref">Test Types and Test Coverage</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-test-types" class="xref">Test Types</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-monte-carlo-tests-for-sha3-" class="xref">Monte Carlo tests for SHA3 and SHAKE</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.6.2.2.2.1">
+                    <p id="section-toc.1-1.6.2.2.2.1.1"><a href="#section-6.2.1" class="xref">6.2.1</a>.  <a href="#name-sha3-monte-carlo-test" class="xref">SHA3 Monte Carlo Test</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.2.2.2">
+                    <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="xref">6.2.2</a>.  <a href="#name-shake-monte-carlo-test" class="xref">SHAKE Monte Carlo Test</a></p>
+</li>
+                </ul>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="xref">6.3</a>.  <a href="#name-large-data-tests-for-sha-3" class="xref">Large Data tests for SHA-3</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="xref">6.4</a>.  <a href="#name-test-coverage" class="xref">Test Coverage</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.6.2.4.2.1">
+                    <p id="section-toc.1-1.6.2.4.2.1.1"><a href="#section-6.4.1" class="xref">6.4.1</a>.  <a href="#name-sha3-requirements-covered" class="xref">SHA3 Requirements Covered</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.4.2.2">
+                    <p id="section-toc.1-1.6.2.4.2.2.1"><a href="#section-6.4.2" class="xref">6.4.2</a>.  <a href="#name-sha3-requirements-not-cover" class="xref">SHA3 Requirements Not Covered</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.4.2.3">
+                    <p id="section-toc.1-1.6.2.4.2.3.1"><a href="#section-6.4.3" class="xref">6.4.3</a>.  <a href="#name-shake-requirements-covered" class="xref">SHAKE Requirements Covered</a></p>
+</li>
+                  <li class="ulEmpty toc compact" id="section-toc.1-1.6.2.4.2.4">
+                    <p id="section-toc.1-1.6.2.4.2.4.1"><a href="#section-6.4.4" class="xref">6.4.4</a>.  <a href="#name-shake-requirements-not-cove" class="xref">SHAKE Requirements Not Covered</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-capabilities-registration" class="xref">Capabilities Registration</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-prerequisites" class="xref">Prerequisites</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="xref">7.2</a>.  <a href="#name-sha3-and-shake-algorithm-ca" class="xref">SHA3 and SHAKE Algorithm Capabilities Registration</a></p>
+</li>
+            </ul>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-test-vectors" class="xref">Test Vectors</a></p>
+<ul class="ulEmpty toc compact">
+<li class="ulEmpty toc compact" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-test-groups" class="xref">Test Groups</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-test-case-json-schema" class="xref">Test Case JSON Schema</a></p>
+</li>
+              <li class="ulEmpty toc compact" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="xref">8.3</a>.  <a href="#name-test-vector-responses" class="xref">Test Vector Responses</a></p>
+</li>
+            </ul>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-normative-references" class="xref">Normative References</a></p>
+</li>
+          <li class="ulEmpty toc compact" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-authors-address" class="xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="acknowledgements">
+<section id="section-1">
+      <h2 id="name-acknowledgements">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<div id="_301ad26a-6c07-437a-9341-21f26eccbbad">
+<p id="section-1-1">There are no acknowledgements.<a href="#section-1-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="abstract">
+<section id="section-2">
+      <h2 id="name-abstract">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-abstract" class="section-name selfRef">Abstract</a>
+      </h2>
+<div id="_616a4d29-03c6-47c6-866b-3407293803c3">
+<p id="section-2-1">This document defines the JSON schema for testing SHA3 and SHAKE implementations with the ACVP specification.<a href="#section-2-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="introduction">
+<section id="section-3">
+      <h2 id="name-introduction">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<div id="_cc98330a-f874-4955-b052-2f136ef367c4">
+<p id="section-3-1">The Automated Crypto Validation Protocol (ACVP) defines a mechanism to automatically verify the cryptographic implementation of a software or hardware crypto module. The ACVP specification defines how a crypto module communicates with an ACVP server, including crypto capabilities negotiation, session management, authentication, vector processing and more. The ACVP specification does not define algorithm specific JSON constructs for performing the crypto validation. A series of ACVP sub-specifications define the constructs for testing individual crypto algorithms. Each sub-specification addresses a specific class of crypto algorithms. This sub-specification defines the JSON constructs for testing SHA3 and SHAKE implementations using ACVP.<a href="#section-3-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="conventions">
+<section id="section-4">
+      <h2 id="name-conventions">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-conventions" class="section-name selfRef">Conventions</a>
+      </h2>
+<div id="_notation_conventions">
+<section id="section-4.1">
+        <h3 id="name-notation-conventions">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-notation-conventions" class="section-name selfRef">Notation conventions</a>
+        </h3>
+<div id="_d699b915-155d-4274-b6f3-c1d0315759f4">
+<p id="section-4.1-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<strong>NOT RECOMMENDED</strong>", "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as described in BCP 14 of <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> and <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_terms_and_definitions">
+<section id="section-4.2">
+        <h3 id="name-terms-and-definitions">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-terms-and-definitions" class="section-name selfRef">Terms and Definitions</a>
+        </h3>
+<div id="_prompt">
+<section id="section-4.2.1">
+          <h4 id="name-prompt">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-prompt" class="section-name selfRef">Prompt</a>
+          </h4>
+<div id="_04f6fb9c-a49a-486e-aca5-c03f0354ee31">
+<p id="section-4.2.1-1">JSON sent from the server to the client describing the tests the client performs<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_registration">
+<section id="section-4.2.2">
+          <h4 id="name-registration">
+<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-registration" class="section-name selfRef">Registration</a>
+          </h4>
+<div id="_2e10ca67-1d27-46ee-b9a2-9937f8793071">
+<p id="section-4.2.2-1">The initial request from the client to the server describing the capabilities of one or several algorithm, mode and revision combinations<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_response">
+<section id="section-4.2.3">
+          <h4 id="name-response">
+<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-response" class="section-name selfRef">Response</a>
+          </h4>
+<div id="_0b8f7e29-0467-4875-8f63-6a92d4882f5f">
+<p id="section-4.2.3-1">JSON sent from the client to the server in response to the prompt<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_test_case">
+<section id="section-4.2.4">
+          <h4 id="name-test-case">
+<a href="#section-4.2.4" class="section-number selfRef">4.2.4. </a><a href="#name-test-case" class="section-name selfRef">Test Case</a>
+          </h4>
+<div id="_e9152ecd-630f-4280-b8d6-74dece97deed">
+<p id="section-4.2.4-1">An individual unit of work within a prompt or response<a href="#section-4.2.4-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_test_group">
+<section id="section-4.2.5">
+          <h4 id="name-test-group">
+<a href="#section-4.2.5" class="section-number selfRef">4.2.5. </a><a href="#name-test-group" class="section-name selfRef">Test Group</a>
+          </h4>
+<div id="_17d9d607-1776-42e9-8bbf-83c718cca378">
+<p id="section-4.2.5-1">A collection of test cases that share similar properties within a prompt or response<a href="#section-4.2.5-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_test_vector_set">
+<section id="section-4.2.6">
+          <h4 id="name-test-vector-set">
+<a href="#section-4.2.6" class="section-number selfRef">4.2.6. </a><a href="#name-test-vector-set" class="section-name selfRef">Test Vector Set</a>
+          </h4>
+<div id="_347d1d50-4e30-4155-8c8d-efccf870f07b">
+<p id="section-4.2.6-1">A collection of test groups under a specific algorithm, mode, and revision<a href="#section-4.2.6-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_validation">
+<section id="section-4.2.7">
+          <h4 id="name-validation">
+<a href="#section-4.2.7" class="section-number selfRef">4.2.7. </a><a href="#name-validation" class="section-name selfRef">Validation</a>
+          </h4>
+<div id="_ffffa7d5-443e-44f4-991a-53c4e033df65">
+<p id="section-4.2.7-1">JSON sent from the server to the client that specifies the correctness of the response<a href="#section-4.2.7-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="supported_algs">
+<section id="section-5">
+      <h2 id="name-supported-hash-algorithms">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-supported-hash-algorithms" class="section-name selfRef">Supported Hash Algorithms</a>
+      </h2>
+<div id="_d10d0a91-8373-476c-9fd5-7f1935534fe9">
+<p id="section-5-1">The following SHA3-based hash algorithms <span class="bcp14">MAY</span> be advertised by this ACVP compliant crypto module:<a href="#section-5-1" class="pilcrow">¶</a></p>
+</div>
+<ul class="normal">
+<li class="normal" id="section-5-2.1">
+          <div id="_26408e8b-4928-49c0-b8b9-32bab3c5e97f">
+<p id="section-5-2.1.1">SHA3-224 / null / 1.0<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.2">
+          <div id="_873930f3-8f57-460e-81fa-52488140ab2d">
+<p id="section-5-2.2.1">SHA3-256 / null / 1.0<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.3">
+          <div id="_b89f1311-5c6b-4d3d-9fff-b2fbd4d0e89f">
+<p id="section-5-2.3.1">SHA3-384 / null / 1.0<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.4">
+          <div id="_cb833a70-3012-4d83-8654-30676a0cb4ef">
+<p id="section-5-2.4.1">SHA3-512 / null / 1.0<a href="#section-5-2.4.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.5">
+          <div id="_d844621f-b27d-4a69-b6fc-8776847652cf">
+<p id="section-5-2.5.1">SHA3-224 / null / 2.0<a href="#section-5-2.5.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.6">
+          <div id="_49d0435b-708e-462e-8312-80ac4135b65c">
+<p id="section-5-2.6.1">SHA3-256 / null / 2.0<a href="#section-5-2.6.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.7">
+          <div id="_b56d1970-6f68-43c9-a87e-5c3bc42f2417">
+<p id="section-5-2.7.1">SHA3-384 / null / 2.0<a href="#section-5-2.7.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.8">
+          <div id="_751d4a48-df1d-4a05-b2b6-4cbca15dd6ac">
+<p id="section-5-2.8.1">SHA3-512 / null / 2.0<a href="#section-5-2.8.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.9">
+          <div id="_94f853b3-e290-4b9a-9d13-98818a2eec69">
+<p id="section-5-2.9.1">SHAKE-128 / null / 1.0<a href="#section-5-2.9.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        <li class="normal" id="section-5-2.10">
+          <div id="_fdc04b99-8589-430f-88ff-8f172234ac1c">
+<p id="section-5-2.10.1">SHAKE-256 / null / 1.0<a href="#section-5-2.10.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+      </ul>
+<div id="_798ab807-4eb6-4801-833a-ee2e843e339c">
+<p id="section-5-3">Other hash algorithms <span class="bcp14">MAY</span> be advertised by the ACVP module elsewhere.<a href="#section-5-3" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="testtypes">
+<section id="section-6">
+      <h2 id="name-test-types-and-test-coverag">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-test-types-and-test-coverag" class="section-name selfRef">Test Types and Test Coverage</a>
+      </h2>
+<div id="_257403ab-2e2a-4b2d-8a5f-321965937a31">
+<p id="section-6-1">This section describes the design of the tests used to validate implementations of SHA3 and SHAKE.<a href="#section-6-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_test_types">
+<section id="section-6.1">
+        <h3 id="name-test-types">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-test-types" class="section-name selfRef">Test Types</a>
+        </h3>
+<div id="_05a9550d-7328-4daf-a57c-3376a5c2b66b">
+<p id="section-6.1-1">There are four types of tests for these hash functions: functional tests, Monte Carlo tests, Variable Output tests and Large Data tests. Each has a specific value to be used in the testType field. The testType field definitions are:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+</div>
+<ul class="normal">
+<li class="normal" id="section-6.1-2.1">
+            <div id="_f6476d29-c1f5-424d-99bd-9631feee4b51">
+<p id="section-6.1-2.1.1">"AFT" - Algorithm Functional Test. These tests can be processed by the client using a normal 'hash' operation.  AFTs cause the implementation under test to exercise normal operations on a single block, multiple blocks, or partial blocks. In all cases, random data is used. The functional tests are designed to verify that the logical components of the hash function or extenable output function (block chunking, block padding etc.) are operating correctly.<a href="#section-6.1-2.1.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+          <li class="normal" id="section-6.1-2.2">
+            <div id="_2e23b48c-3dcc-4f62-af34-4f920ef18505">
+<p id="section-6.1-2.2.1">"MCT" - Monte Carlo Test. These tests exercise the implementation under test under stenuous circumstances. The implementation under test must process the test vectors according to the correct algorithm and mode in this document. MCTs can help detect potential memory leaks over time, and problems in allocation of resources, addressing variables, error handling, and generally improper behavior in response to random inputs. Each MCT processes 100 pseudorandom tests. Each algorithm and mode SHOULD have at least one MCT group. See <a href="#MC_test" class="xref">Section 6.2</a> for implementation details.<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+          <li class="normal" id="section-6.1-2.3">
+            <div id="_dd34ef37-191a-4512-a982-e0f58662443f">
+<p id="section-6.1-2.3.1">"VOT" - Variable Output Test. These tests are for SHAKE only, and ensure that an IUT can properly perform the extendable output function to produce digests of specifc lengths. These tests differ from the AFTs for SHAKE in that the AFTs all produce a single digest size, matching the security strength of the extendable output function. The VOTs SHALL produce varying digest sizes based on the capabilities of the IUT.<a href="#section-6.1-2.3.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+          <li class="normal" id="section-6.1-2.4">
+            <div id="_4b05552f-6227-4799-a5a5-d98465989ee5">
+<p id="section-6.1-2.4.1">"LDT" - Large Data Test. These tests are for SHA3 only. This test performs the hash function on a message that is multiple gigabytes in length. This pushes the bounds of 32-bit data types to ensure an implementation can handle all types of data. See <span>[<a href="#LDT" class="xref">LDT</a>]</span> for more information motivating the LDT. As a multiple gigabyte message cannot be communicated naturally via ACVP, a specific structure is outlined in <a href="#LD_test" class="xref">Section 6.3</a>.<a href="#section-6.1-2.4.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        </ul>
+</section>
+</div>
+<div id="MC_test">
+<section id="section-6.2">
+        <h3 id="name-monte-carlo-tests-for-sha3-">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-monte-carlo-tests-for-sha3-" class="section-name selfRef">Monte Carlo tests for SHA3 and SHAKE</a>
+        </h3>
+<div id="SHA3-MCT">
+<section id="section-6.2.1">
+          <h4 id="name-sha3-monte-carlo-test">
+<a href="#section-6.2.1" class="section-number selfRef">6.2.1. </a><a href="#name-sha3-monte-carlo-test" class="section-name selfRef">SHA3 Monte Carlo Test</a>
+          </h4>
+<div id="_674251b4-9b08-46c8-b460-50cba82ab9d4">
+<p id="section-6.2.1-1">The MCTs start with an initial condition (SEED which is a single message) and perform a series of chained computations. The algorithm is shown below.<a href="#section-6.2.1-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_1976f712-c2dc-41a1-aa6d-83ef50a58561">
+<div id="section-6.2.1-2">
+<pre class="sourcecode lang-code">For j = 0 to 99
+MD[0] = SEED;
+    For i = 1 to 1000
+        MSG[i] = MD[i-1]
+        MD[i] = SHA3(MSG[i])
+    Output MD[1000]
+    SEED = MD[1000]</pre><a href="#section-6.2.1-2" class="pilcrow">¶</a>
+</div>
+</div>
+</section>
+</div>
+<div id="SHAKE-MCT">
+<section id="section-6.2.2">
+          <h4 id="name-shake-monte-carlo-test">
+<a href="#section-6.2.2" class="section-number selfRef">6.2.2. </a><a href="#name-shake-monte-carlo-test" class="section-name selfRef">SHAKE Monte Carlo Test</a>
+          </h4>
+<div id="_b75a4f56-3df5-4ab9-896a-fb849ded45e0">
+<p id="section-6.2.2-1">The MCTs start with an initial condition (SEED which is a single message) and perform a series of chained computations. Some values used in the algorithm are based on properties provided during the registration. They are as follows.<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
+</div>
+<ul class="normal">
+<li class="normal" id="section-6.2.2-2.1">
+              <div id="_7b9624ff-6ad6-44e9-bff7-f6b94c324142">
+<p id="section-6.2.2-2.1.1">minOutBytes = smallest number of bytes supported<a href="#section-6.2.2-2.1.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+            <li class="normal" id="section-6.2.2-2.2">
+              <div id="_817b5a2a-01d1-4315-97a7-10abc69e542c">
+<p id="section-6.2.2-2.2.1">maxOutBytes = largest number of bytes supported<a href="#section-6.2.2-2.2.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+          </ul>
+<div id="_76a4e061-efde-4491-a9dd-7b3003fc56c5">
+<p id="section-6.2.2-3">The SHAKE function used in the pseudocode takes in a bitstring and a desired output length in bits. The M[i] input to SHAKE MUST always contain at least 128 bits. If this is not the case as the previous digest was too short, append empty bits to the rightmost side of the digest. The MCT algorithm is shown below.<a href="#section-6.2.2-3" class="pilcrow">¶</a></p>
+</div>
+<div id="_1c36b969-5ef4-41cd-a57b-740fb3f55b65">
+<div id="section-6.2.2-4">
+<pre class="sourcecode lang-code">Range = maxOutBytes - minOutBytes + 1
+OutputLen = maxOutBytes
+For j = 0 to 99
+    MD[0] = SEED
+    For i = 1 to 1000
+        MSG[i] = 128 leftmost bits of MD[i-1]
+        if (MSG[i] &lt; 128 bits)
+            Append 0 bits on rightmost side of MSG[i] til MSG[i] is 128 bits
+        MD[i] = SHAKE(M[i], OutputLen * 8)
+
+        if (i != 1000)
+            RightmostOutputBits = 16 rightmost bits of MD[i] as an integer
+            OutputLen = minOutBytes + (RightmostOutputBits % Range)
+
+    Output MD[1000], OutputLen
+    SEED = MD[1000]</pre><a href="#section-6.2.2-4" class="pilcrow">¶</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="LD_test">
+<section id="section-6.3">
+        <h3 id="name-large-data-tests-for-sha-3">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-large-data-tests-for-sha-3" class="section-name selfRef">Large Data tests for SHA-3</a>
+        </h3>
+<div id="_a2074ba8-490e-454a-9ed2-e4ef73dce6f1">
+<p id="section-6.3-1">The large data tests are intended to test the ability of a module to hash multiple gigabytes of data at once. This much information cannot be communicated via the JSON files as a normal message property. Instead a new type is defined as a large data type. It is an object that contains a small content hex string, a content length in bits, a full length in bits and an expansion technique string. The following is an example of this structure.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_25afb944-ab03-470e-a04d-94f96fd10847">
+<div id="section-6.3-2">
+<pre class="sourcecode lang-json">"largeMsg": {
+    "content": "DE26",
+    "contentLength": 16,
+    "fullLength": 42949672960,
+    "expansionTechnique": "repeating"
+}</pre><a href="#section-6.3-2" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="_fbfa5d1c-4668-4c53-87c3-0b4b721727b4">
+<p id="section-6.3-3">The 'contentLength' property describes the number of bits in the 'content' property. The 'content' property is the hex string that can be expanded to the full large message. The 'expansionTechnique' describes the process used to obtain the full large message. The 'fullLength' is the final length of the full large message.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
+</div>
+<div id="_9ce279ef-8ade-434d-ac05-a29a5167d992">
+<p id="section-6.3-4">There may be multiple 'expansionTechnique' types defined. Here are the types defined for SHA-3 testing.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+</div>
+<ul class="normal">
+<li class="normal" id="section-6.3-5.1">
+            <div id="_0bff4a42-142e-406c-93be-eff0a8d04138">
+<p id="section-6.3-5.1.1">"repeating" - Append the number of content bits specified in 'contentLength' to itself as many times as needed until a hex string of exactly 'fullLength' bits is acquired. In the example shown, the final large message would have the form "DE26DE26DE26...​DE26".<a href="#section-6.3-5.1.1" class="pilcrow">¶</a></p>
+</div>
+</li>
+        </ul>
+<div id="_4295e5ae-f0d6-4609-8081-b93d786eaa87">
+<p id="section-6.3-6">There are multiple ways hash functions can be implemented in an IUT. The most common are via a single Hash() call on the message or via a series of Init(), any number of Update(), Final() calls. As noted in <span>[<a href="#LDT" class="xref">LDT</a>]</span>, the difference between these hashing techniques can have consequences in the cryptographic module. If both interfaces are offered and accessible for testing, the IUT <span class="bcp14">MUST</span> only utilize a single Update() call for the large message.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="test_coverage">
+<section id="section-6.4">
+        <h3 id="name-test-coverage">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-test-coverage" class="section-name selfRef">Test Coverage</a>
+        </h3>
+<div id="_daa89ac1-8263-4b1c-a491-dac0a108c701">
+<p id="section-6.4-1">The tests described in this document have the intention of ensuring an implementation is conformant to <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span>.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+</div>
+<div id="sha3-coverage">
+<section id="section-6.4.1">
+          <h4 id="name-sha3-requirements-covered">
+<a href="#section-6.4.1" class="section-number selfRef">6.4.1. </a><a href="#name-sha3-requirements-covered" class="section-name selfRef">SHA3 Requirements Covered</a>
+          </h4>
+<div id="_15325f8f-08a5-4bea-a312-d0c9fe00638c">
+<p id="section-6.4.1-1">Sections 3 through 6 in <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span> outline the Keccak construction and strucures needed to form a valid SHA3 implementation. Normal AFTs test these operations by running the algorithm.<a href="#section-6.4.1-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_6ac36452-bc78-4be7-8496-88afa6af6cff">
+<p id="section-6.4.1-2">Section 7 in <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span> states that any input sizes may be used within a SHA3 hash implementation. The input sizes tested in this document range from 0 bits to 65536 bits. In addition a large data test is available by special request which tests messages that are multiple gigabytes in size.<a href="#section-6.4.1-2" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="sha3-not-coverage">
+<section id="section-6.4.2">
+          <h4 id="name-sha3-requirements-not-cover">
+<a href="#section-6.4.2" class="section-number selfRef">6.4.2. </a><a href="#name-sha3-requirements-not-cover" class="section-name selfRef">SHA3 Requirements Not Covered</a>
+          </h4>
+<div id="_598e1adb-d23e-4703-85cf-8d6446ddc6d6">
+<p id="section-6.4.2-1">It is noted that <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span> states that "different procedures that produce the correct output for every input are permitted" and thus the internal states discussed in Sections 3 through 6 <span class="bcp14">SHALL NOT</span> be tested or tracked.<a href="#section-6.4.2-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="shake-coverage">
+<section id="section-6.4.3">
+          <h4 id="name-shake-requirements-covered">
+<a href="#section-6.4.3" class="section-number selfRef">6.4.3. </a><a href="#name-shake-requirements-covered" class="section-name selfRef">SHAKE Requirements Covered</a>
+          </h4>
+<div id="_50c94f59-42d2-4c11-ac19-d91a7a1c627a">
+<p id="section-6.4.3-1">Sections 3 through 6 in <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span> outline the Keccak construction and strucures needed to form a valid SHAKE implementation. Normal AFTs test these operations by running the algorithm. VOTs exercise the ability of the implementation to perform the algorithm as well by focusing on the sponge construction.<a href="#section-6.4.3-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_2a3aef96-8f2d-4458-9521-5b27c7c6bb90">
+<p id="section-6.4.3-2">Section 7 in <span>[<a href="#FIPS202" class="xref">FIPS202</a>]</span> states that any input sizes or output sizes may be used within a SHAKE implementation. The input sizes tested in this document range from 0 bits to 65536 bits. The output sizes tested in this document range from 16 bits to 65536 bits.<a href="#section-6.4.3-2" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="shake-not-coverage">
+<section id="section-6.4.4">
+          <h4 id="name-shake-requirements-not-cove">
+<a href="#section-6.4.4" class="section-number selfRef">6.4.4. </a><a href="#name-shake-requirements-not-cove" class="section-name selfRef">SHAKE Requirements Not Covered</a>
+          </h4>
+<div id="_81fb2c50-9d38-4792-bc5e-eb2b0dac9ae1">
+<p id="section-6.4.4-1">Again, the internal states discussed in Sections 3 through 6 <span class="bcp14">SHALL NOT</span> be tested or tracked.<a href="#section-6.4.4-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="capabilities">
+<section id="section-7">
+      <h2 id="name-capabilities-registration">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-capabilities-registration" class="section-name selfRef">Capabilities Registration</a>
+      </h2>
+<div id="_b7a486bd-5066-4648-ad76-99a0157247fb">
+<p id="section-7-1">ACVP requires crypto modules to register their capabilities. This allows the crypto module to advertise support for specific algorithms, notifying the ACVP server which algorithms need test vectors generated for the validation process.  This section describes the constructs for advertising support of SHA3 and SHAKE algorithms to the ACVP server.<a href="#section-7-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_a8e060b3-bfb2-444d-a27a-e6755dfbd3e9">
+<p id="section-7-2">The algorithm capabilities <span class="bcp14">MUST</span> be advertised as JSON objects within the 'algorithms' value of the ACVP registration message. The 'algorithms' value is an array, where each array element is an individual JSON object defined in this section. The 'algorithms' value is part of the 'capability_exchange' element of the ACVP JSON registration message. See the ACVP specification <span>[<a href="#ACVP" class="xref">ACVP</a>]</span> for more details on the registration message.<a href="#section-7-2" class="pilcrow">¶</a></p>
+</div>
+<div id="prerequisites">
+<section id="section-7.1">
+        <h3 id="name-prerequisites">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-prerequisites" class="section-name selfRef">Prerequisites</a>
+        </h3>
+<div id="_082a56bc-2467-4f9b-a73f-a9e29c9a9706">
+<p id="section-7.1-1">Each algorithm implementation <span class="bcp14">MAY</span> rely on other cryptographic primitives. For example, RSA Signature algorithms depend on an underlying hash function. Each of these underlying algorithm primitives must be validated, either separately or as part of the same submission. ACVP provides a mechanism for specifying the required prerequisites:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_fc450c8b-8774-44ae-819e-1172fc192a80">
+<p id="section-7.1-2">Prerequisites, if applicable, <span class="bcp14">MUST</span> be submitted in the registration as the <code>prereqVals</code> JSON property array inside each element of the <code>algorithms</code> array. Each element in the <code>prereqVals</code> array <span class="bcp14">MUST</span> contain the following properties<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+</div>
+<span id="name-prerequisite-properties"></span><div id="_db69b6ff-a053-4b01-9eef-16f9634d9ab2">
+<table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-prerequisite-properties" class="selfRef">Prerequisite Properties</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Property</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">algorithm</td>
+              <td class="text-left" rowspan="1" colspan="1">a prerequisite algorithm</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">valValue</td>
+              <td class="text-left" rowspan="1" colspan="1">algorithm validation number</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_6d203960-74a5-4b27-addb-03480c1c1b73">
+<p id="section-7.1-4">A "valValue" of "same" <span class="bcp14">SHALL</span> be used to indicate that the prerequisite is being met by a different algorithm in the capability exchange in the same registration.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+</div>
+<div id="_927af6f5-602d-4dde-af4d-d9382ed93ab8">
+<p id="section-7.1-5">An example description of prerequisites within a single algorithm capability exchange looks like this<a href="#section-7.1-5" class="pilcrow">¶</a></p>
+</div>
+<div id="_3a28d910-4683-4c88-9f9f-765258a3dbf5">
+<div id="section-7.1-6">
+<pre class="sourcecode lang-json">"prereqVals":
+[
+  {
+    "algorithm": "Alg1",
+    "valValue": "Val-1234"
+  },
+  {
+    "algorithm": "Alg2",
+    "valValue": "same"
+  }
+]</pre><a href="#section-7.1-6" class="pilcrow">¶</a>
+</div>
+</div>
+</section>
+</div>
+<div id="hash_caps_reg">
+<section id="section-7.2">
+        <h3 id="name-sha3-and-shake-algorithm-ca">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-sha3-and-shake-algorithm-ca" class="section-name selfRef">SHA3 and SHAKE Algorithm Capabilities Registration</a>
+        </h3>
+<div id="_021ed15d-0901-4793-9be8-aee72506e45a">
+<p id="section-7.2-1">Each SHA3 and SHAKE algorithm capability advertised <span class="bcp14">SHALL</span> be a self-contained JSON object. The following JSON values are used for hash algorithm capabilities:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+</div>
+<span id="name-sha3-10-and-shake-10-algori"></span><div id="caps_table">
+<table class="center" id="table-2">
+          <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#name-sha3-10-and-shake-10-algori" class="selfRef">SHA3 1.0 and SHAKE 1.0 Algorithm Capabilities JSON Values</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">algorithm</td>
+              <td class="text-left" rowspan="1" colspan="1">The hash algorithm and mode to be validated.</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">revision</td>
+              <td class="text-left" rowspan="1" colspan="1">The algorithm testing revision to use.</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">inBit</td>
+              <td class="text-left" rowspan="1" colspan="1">Implementation does accept bit-oriented messages</td>
+              <td class="text-left" rowspan="1" colspan="1">boolean</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">inEmpty</td>
+              <td class="text-left" rowspan="1" colspan="1">Implementation does accept null (zero-length) messages</td>
+              <td class="text-left" rowspan="1" colspan="1">boolean</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">outputLen</td>
+              <td class="text-left" rowspan="1" colspan="1">Output length for SHAKE</td>
+              <td class="text-left" rowspan="1" colspan="1">domain</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">outBit</td>
+              <td class="text-left" rowspan="1" colspan="1">SHAKE can output bit-oriented messages</td>
+              <td class="text-left" rowspan="1" colspan="1">boolean</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">performLargeDataTest</td>
+              <td class="text-left" rowspan="1" colspan="1">Determines if the server should include the large data test group defined in <a href="#LD_test" class="xref">Section 6.3</a>. This property is <span class="bcp14">OPTIONAL</span>, and shall include the lengths in GiB being tested. Valid options are {1, 2, 4, 8}.</td>
+              <td class="text-left" rowspan="1" colspan="1">integer array</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_33f481d6-eac5-4212-9b84-8ded667bdc82">
+<aside id="section-7.2-3">
+          <p id="section-7.2-3.1">NOTE: The lengths provided in the 'performLargeDataTest' property are in gibibytes. 1GiB is equivalent to 2^30 bytes.<a href="#section-7.2-3.1" class="pilcrow">¶</a></p>
+</aside>
+</div>
+<div id="_7110d7c8-2c60-46cc-b16b-b150596fb919">
+<p id="section-7.2-4">The following grid outlines which properties are <span class="bcp14">REQUIRED</span>, as well as all the possible values a server <span class="bcp14">MAY</span> support for SHA3 and SHAKE algorithms:<a href="#section-7.2-4" class="pilcrow">¶</a></p>
+</div>
+<span id="name-sha3-and-shake-capabilities"></span><div id="property_grid">
+<table class="center" id="table-3">
+          <caption>
+<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#name-sha3-and-shake-capabilities" class="selfRef">SHA3 and SHAKE Capabilities Applicability Grid</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">algorithm</th>
+              <th class="text-left" rowspan="1" colspan="1">inBit</th>
+              <th class="text-left" rowspan="1" colspan="1">inEmpty</th>
+              <th class="text-left" rowspan="1" colspan="1">outputLen</th>
+              <th class="text-left" rowspan="1" colspan="1">outBit</th>
+              <th class="text-left" rowspan="1" colspan="1">performLargeDataTest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHA3-224</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHA3-256</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHA3-384</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHA3-512</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHAKE-128</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">{"Min": 16, "Max": 65536, "Inc": any}</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">SHAKE-256</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1">{"Min": 16, "Max": 65536, "Inc": any}</td>
+              <td class="text-left" rowspan="1" colspan="1">true, false</td>
+              <td class="text-left" rowspan="1" colspan="1"></td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_72958a8b-d9b3-418f-a1a1-581cd8037de0">
+<p id="section-7.2-6">The following is a example JSON object advertising support for SHA3-256 for testing revision 1.0.<a href="#section-7.2-6" class="pilcrow">¶</a></p>
+</div>
+<div id="_491febf8-6a25-415b-a61e-9d7d0135c12c">
+<div id="section-7.2-7">
+<pre class="sourcecode lang-json">{
+    "algorithm": "SHA3-256",
+    "revision": "1.0",
+    "inBit": true,
+    "inEmpty": true,
+    "performLargeDataTest": [1, 2, 4, 8]
+}</pre><a href="#section-7.2-7" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="_2ccf703b-8293-4cf6-a190-4d8e388f0425">
+<p id="section-7.2-8">The following is an example JSON object advertising support for SHAKE-128.<a href="#section-7.2-8" class="pilcrow">¶</a></p>
+</div>
+<div id="_4e7649d3-6ac1-4734-9fd8-8eddbea35811">
+<div id="section-7.2-9">
+<pre class="sourcecode lang-json">{
+    "algorithm": "SHAKE-128",
+    "revision": "1.0",
+    "inBit": true,
+    "inEmpty": true,
+    "outBit": true,
+    "outputLen": [
+        {
+        "min": 16,
+        "max": 1024
+        }
+    ]
+}</pre><a href="#section-7.2-9" class="pilcrow">¶</a>
+</div>
+</div>
+<span id="name-sha3-20-algorithm-capabilit"></span><div id="_50127e7b-a647-4460-844c-94d449e5407e">
+<table class="center" id="table-4">
+          <caption>
+<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#name-sha3-20-algorithm-capabilit" class="selfRef">SHA3 2.0 Algorithm Capabilities JSON Values</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">algorithm</td>
+              <td class="text-left" rowspan="1" colspan="1">The hash algorithm and mode to be validated.</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">revision</td>
+              <td class="text-left" rowspan="1" colspan="1">The algorithm testing revision to use.</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">messageLength</td>
+              <td class="text-left" rowspan="1" colspan="1">Domain representing the message lengths supported. The current MCT implementation requires that the digest size and 3x the digest size of the registered hash algorithm must be a valid value within the registered domain.</td>
+              <td class="text-left" rowspan="1" colspan="1">domain</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">performLargeDataTest</td>
+              <td class="text-left" rowspan="1" colspan="1">Determines if the server should include the large data test group defined in <a href="#LD_test" class="xref">Section 6.3</a>. This property is <span class="bcp14">OPTIONAL</span>, and shall include the lengths in GiB being tested. Valid options are {1, 2, 4, 8}.</td>
+              <td class="text-left" rowspan="1" colspan="1">integer array</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_ef27b3b6-93ec-4b81-9a65-96ec99586b21">
+<aside id="section-7.2-11">
+          <p id="section-7.2-11.1">NOTE: The lengths provided in the 'performLargeDataTest' property are in gibibytes. 1GiB is equivalent to 2^30 bytes.<a href="#section-7.2-11.1" class="pilcrow">¶</a></p>
+</aside>
+</div>
+<div id="_383040fa-dfd0-4050-a083-7f4021968b61">
+<p id="section-7.2-12">The following is a example JSON object advertising support for SHA3-256 for testing revision 2.0.<a href="#section-7.2-12" class="pilcrow">¶</a></p>
+</div>
+<div id="_f5660697-6a0d-49f4-8740-188060089c8c">
+<div id="section-7.2-13">
+<pre class="sourcecode lang-json">{
+    "algorithm": "SHA3-256",
+    "revision": "2.0",
+    "inBit": true,
+    "inEmpty": true,
+    "messageLength": [{"min": 0, "max": 65536, "increment": 1}],
+    "performLargeDataTest": [1, 2, 4, 8]
+}</pre><a href="#section-7.2-13" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="_be2b0769-f12f-43c0-9c22-c00b0b23597d">
+<aside id="section-7.2-14">
+          <p id="section-7.2-14.1">NOTE  1: Since the increment is 1 in the above, and the minimum value within the message length is zero, this is effectively an "inBit" and "inEmpty" registration from the 1.0 revision testing.  If the implementation supports only byte length messages, you could use an increment of 8.<a href="#section-7.2-14.1" class="pilcrow">¶</a></p>
+</aside>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="test-vectors">
+<section id="section-8">
+      <h2 id="name-test-vectors">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-test-vectors" class="section-name selfRef">Test Vectors</a>
+      </h2>
+<div id="_657cc5d5-46dc-4faf-8f94-044c7c49be63">
+<p id="section-8-1">The ACVP server provides test vectors to the ACVP client, which are then processed and returned to the ACVP server for validation. A typical ACVP validation test session would require multiple test vector sets to be downloaded and processed by the ACVP client. Each test vector set represents an individual algorithm defined during the capability exchange. This section describes the JSON schema for a test vector set used with SHA3 and SHAKE algorithms.<a href="#section-8-1" class="pilcrow">¶</a></p>
+</div>
+<div id="_8671786f-3c50-41bd-84ac-42d3e3a907aa">
+<p id="section-8-2">The test vector set JSON schema is a multi-level hierarchy that contains meta data for the entire vector set as well as individual test vectors to be processed by the ACVP client. The following table describes the JSON elements at the top level of the hierarchy.<a href="#section-8-2" class="pilcrow">¶</a></p>
+</div>
+<span id="name-top-level-test-vector-json-"></span><div id="_07ad2519-077f-44fe-b688-049a112ce51c">
+<table class="center" id="table-5">
+        <caption>
+<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#name-top-level-test-vector-json-" class="selfRef">Top Level Test Vector JSON Elements</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">JSON Values</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">JSON Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">acvVersion</td>
+            <td class="text-left" rowspan="1" colspan="1">Protocol version identifier</td>
+            <td class="text-left" rowspan="1" colspan="1">string</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">vsId</td>
+            <td class="text-left" rowspan="1" colspan="1">Unique numeric vector set identifier</td>
+            <td class="text-left" rowspan="1" colspan="1">integer</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">algorithm</td>
+            <td class="text-left" rowspan="1" colspan="1">Algorithm defined in the capability exchange</td>
+            <td class="text-left" rowspan="1" colspan="1">string</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">mode</td>
+            <td class="text-left" rowspan="1" colspan="1">Mode defined in the capability exchange</td>
+            <td class="text-left" rowspan="1" colspan="1">string</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">revision</td>
+            <td class="text-left" rowspan="1" colspan="1">Protocol test revision selected</td>
+            <td class="text-left" rowspan="1" colspan="1">string</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">testGroups</td>
+            <td class="text-left" rowspan="1" colspan="1">Array of test groups containing test data, see <a href="#tgjs" class="xref">Section 8.1</a>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">array</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<div id="_172be481-47a7-461e-9f7e-3b8900e474c0">
+<p id="section-8-4">An example of this would look like this<a href="#section-8-4" class="pilcrow">¶</a></p>
+</div>
+<div id="_9070a229-9cd5-4f8f-b455-06dd4c6e3b37">
+<div id="section-8-5">
+<pre class="sourcecode lang-json">{
+  "acvVersion": "version",
+  "vsId": 1,
+  "algorithm": "Alg1",
+  "mode": "Mode1",
+  "revision": "Revision1.0",
+  "testGroups": [ ... ]
+}</pre><a href="#section-8-5" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="tgjs">
+<section id="section-8.1">
+        <h3 id="name-test-groups">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-test-groups" class="section-name selfRef">Test Groups</a>
+        </h3>
+<div id="_5ec6d6ea-e8fc-4a81-9567-7d4ed6f715c8">
+<p id="section-8.1-1">Test vector sets <span class="bcp14">MUST</span> contain one or many test groups, each sharing similar properties. For instance, all test vectors that use the same key size would be grouped together. The testGroups element at the top level of the test vector JSON object SHALL be the array of test groups. The Test Group JSON object <span class="bcp14">MUST</span> contain meta-data that applies to all test cases within the group. The following table describes the JSON elements that <span class="bcp14">MUST</span> appear from the server in the Test Group JSON object:<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+</div>
+<span id="name-test-group-json-object"></span><div id="vs_tg_table">
+<table class="center" id="table-6">
+          <caption>
+<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#name-test-group-json-object" class="selfRef">Test Group JSON Object</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tgId</td>
+              <td class="text-left" rowspan="1" colspan="1">Numeric identifier for the test group, unique across the entire vector set.</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">testType</td>
+              <td class="text-left" rowspan="1" colspan="1">Test category type. AFT, MCT or VOT as defined in <a href="#testtypes" class="xref">Section 6</a>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">value</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tests</td>
+              <td class="text-left" rowspan="1" colspan="1">Array of individual test case JSON objects, which are defined in <a href="#tcjs" class="xref">Section 8.2</a>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">array of testCase objects</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+</section>
+</div>
+<div id="tcjs">
+<section id="section-8.2">
+        <h3 id="name-test-case-json-schema">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-test-case-json-schema" class="section-name selfRef">Test Case JSON Schema</a>
+        </h3>
+<div id="_2d542c1a-e69c-4fc6-852b-a6ed9fb3bf63">
+<p id="section-8.2-1">Each test group <span class="bcp14">SHALL</span> contain an array of one or more test cases.  Each test case is a JSON object that represents a single case to be processed by the ACVP client.  The following table describes the JSON elements for each test case.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</div>
+<span id="name-test-case-json-object"></span><div id="vs_tc_table">
+<table class="center" id="table-7">
+          <caption>
+<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#name-test-case-json-object" class="selfRef">Test Case JSON Object</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tcId</td>
+              <td class="text-left" rowspan="1" colspan="1">Numeric identifier for the test case, unique across the entire vector set.</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">len</td>
+              <td class="text-left" rowspan="1" colspan="1">Length of the message or seed</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">outLen</td>
+              <td class="text-left" rowspan="1" colspan="1">Length of the digest</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">msg</td>
+              <td class="text-left" rowspan="1" colspan="1">Value of the message or seed.  Messages are represented as little-endian hex for all SHA3 variations.</td>
+              <td class="text-left" rowspan="1" colspan="1">string (hex)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">largeMsg</td>
+              <td class="text-left" rowspan="1" colspan="1">Object describing the message for an LDT group</td>
+              <td class="text-left" rowspan="1" colspan="1">large data object, see <a href="#LD_test" class="xref">Section 6.3</a> for more information</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_128dd0a7-2a7a-4fcb-bb47-9ab21a7f3cbc">
+<aside id="section-8.2-3">
+          <p id="section-8.2-3.1">NOTE: All properties listed in the above table are <span class="bcp14">REQUIRED</span> except for outLen which is only <span class="bcp14">REQUIRED</span> when the algorithm is SHAKE-128 or SHAKE-256.<a href="#section-8.2-3.1" class="pilcrow">¶</a></p>
+</aside>
+</div>
+<div id="_8c0dbee8-c5c9-4395-8706-8931f58be780">
+<p id="section-8.2-4">The following is an example JSON object for secure hash test vectors sent from the ACVP server to the crypto module. Notice that the single bit message is represented as "01". This complies with the little-endian nature of SHA3. All hex displayed is little-endian bit order when associated with SHA3 or any of its variations.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+</div>
+<div id="_de46fb61-0084-4342-8f04-54e0f08d6312">
+<div id="section-8.2-5">
+<pre class="sourcecode lang-json">[
+    { "acvVersion": &lt;acvp-version&gt; },
+    {
+        "vsId": 1564,
+        "algorithm": "SHA3-512",
+        "revision": "1.0",
+        "testGroups": [
+        {
+            "tgId": 1,
+            "testType": "AFT",
+            "tests": [
+            {
+                "tcId": 1,
+                "len": 0,
+                "msg": "00"
+            },
+            {
+                "tcId": 2,
+                "len": 1,
+                "msg": "01"
+            }]
+        },
+        {
+            "tgId": 2,
+            "testType": "MCT",
+            "tests": [
+            {
+                "tcId": 3,
+                "len": 512,
+                "msg": "30850bd984b14ff5aff18993329...",
+            }]
+        },
+        {
+            "tgId": 3,
+            "testType": "LDT",
+            "tests": [
+                {
+                    "tcId": 4,
+                    "largeMsg": {
+                        "content": "DE26",
+                        "contentLength": 16,
+                        "fullLength": 42949672960,
+                        "expansionTechnique": "repeating"
+                    }
+                }
+            ]
+        }]
+    }
+]</pre><a href="#section-8.2-5" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="_e4648123-b978-4f3c-aa99-ef69fc9be12d">
+<p id="section-8.2-6">The following is an example JSON object for SHAKE.<a href="#section-8.2-6" class="pilcrow">¶</a></p>
+</div>
+<div id="_896fe7ee-a1f4-419e-b754-9c3063b62b8b">
+<div id="section-8.2-7">
+<pre class="sourcecode lang-json">[
+    { "acvVersion": &lt;acvp-version&gt; },
+    {
+        "vsId": 1564,
+        "algorithm": "SHAKE-128",
+        "revision": "1.0",
+        "testGroups": [
+        {
+            "tgId": 1,
+            "testType": "AFT",
+            "tests": [
+            {
+                "tcId": 1,
+                "len": 0,
+                "msg": "00"
+            },
+            {
+                "tcId": 2,
+                "len": 1,
+                "msg": "01"
+            }]
+        },
+        {
+            "tgId": 2,
+            "testType": "MCT",
+            "inBit": true,
+            "outBit": true,
+            "inEmpty": false,
+            "maxOutLen": 4096,
+            "minOutLen": 128,
+            "tests": [
+            {
+                "tcId": 3,
+                "len": 512,
+                "msg": "30850bd984b14ff5aff18993329...",
+            }]
+        },
+        {
+            "tgId": 3,
+            "testType": "VOT",
+            "tests": [
+            {
+                "tcId": 4,
+                "len": 128,
+                "msg": "7a4c48eb710299e4ff2be3f446327a6f",
+                "outLen": 16
+            },
+            {
+                "tcId": 5,
+                "len": 128,
+                "msg": "b16f331b3a0cf4507124b4358f9d15f5",
+                "outLen": 144
+            }]
+        }]
+    }
+]</pre><a href="#section-8.2-7" class="pilcrow">¶</a>
+</div>
+</div>
+</section>
+</div>
+<div id="vector_responses">
+<section id="section-8.3">
+        <h3 id="name-test-vector-responses">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-test-vector-responses" class="section-name selfRef">Test Vector Responses</a>
+        </h3>
+<div id="_3808154b-f081-4bfc-8613-0c0e94345bdc">
+<p id="section-8.3-1">After the ACVP client downloads and processes a vector set, it <span class="bcp14">SHALL</span> send the response vectors back to the ACVP server within the alloted timeframe. The following table describes the JSON object that represents a vector set response.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+</div>
+<span id="name-vector-set-response-json-ob"></span><div id="vr_top_table">
+<table class="center" id="table-8">
+          <caption>
+<a href="#table-8" class="selfRef">Table 8</a>:
+<a href="#name-vector-set-response-json-ob" class="selfRef">Vector Set Response JSON Object</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">acvVersion</td>
+              <td class="text-left" rowspan="1" colspan="1">Protocol version identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">string</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">vsId</td>
+              <td class="text-left" rowspan="1" colspan="1">Unique numeric identifier for the vector set</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">testGroups</td>
+              <td class="text-left" rowspan="1" colspan="1">Array of JSON objects that represent each test vector result, which uses the same JSON schema as defined in <a href="#tcjs" class="xref">Section 8.2</a>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">array of testGroup objects</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_b870fdac-a1b8-42c0-aa0a-68b8bec3a002">
+<p id="section-8.3-3">The testGroup Response section is used to organize the ACVP client response in a similar manner to how it receives vectors. Several algorithms <span class="bcp14">SHALL</span> require the client to send back group level properties in its response. This structure helps accommodate that.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+</div>
+<span id="name-vector-set-group-response-j"></span><div id="vr_group_table">
+<table class="center" id="table-9">
+          <caption>
+<a href="#table-9" class="selfRef">Table 9</a>:
+<a href="#name-vector-set-group-response-j" class="selfRef">Vector Set Group Response JSON Object</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tgId</td>
+              <td class="text-left" rowspan="1" colspan="1">The test group identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tests</td>
+              <td class="text-left" rowspan="1" colspan="1">The tests associated to the group specified in tgId</td>
+              <td class="text-left" rowspan="1" colspan="1">array of testCase objects</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_38534f24-6790-420a-b5a6-bc55070406e9">
+<p id="section-8.3-5">Each test case is a JSON object that represents a single test object to be processed by the ACVP client.
+The following table describes the JSON elements for each test case object.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
+</div>
+<span id="name-test-case-results-json-obje"></span><div id="vs_tr_table">
+<table class="center" id="table-10">
+          <caption>
+<a href="#table-10" class="selfRef">Table 10</a>:
+<a href="#name-test-case-results-json-obje" class="selfRef">Test Case Results JSON Object</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">JSON Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">JSON Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">tcId</td>
+              <td class="text-left" rowspan="1" colspan="1">Numeric identifier for the test case, unique across the entire vector set.</td>
+              <td class="text-left" rowspan="1" colspan="1">integer</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">md</td>
+              <td class="text-left" rowspan="1" colspan="1">The IUT's digest response to a VOT, AFT or LDT</td>
+              <td class="text-left" rowspan="1" colspan="1">string (hex)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">resultsArray</td>
+              <td class="text-left" rowspan="1" colspan="1">Array of JSON objects that represent each iteration of a Monte Carlo Test. Each iteration will contain the msg and md (and outLen for SHAKE-128 and SHAKE-256)</td>
+              <td class="text-left" rowspan="1" colspan="1">array of objects containing the md (and potentially outLen)</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<div id="_fbf4237a-487d-4227-bd36-b0caa89474ff">
+<aside id="section-8.3-7">
+          <p id="section-8.3-7.1">NOTE: The 'tcId' <span class="bcp14">MUST</span> be included in every test case object sent between the client and the server.<a href="#section-8.3-7.1" class="pilcrow">¶</a></p>
+</aside>
+</div>
+<div id="_26c71b60-db5d-4756-b0e2-b781f2b8b165">
+<p id="section-8.3-8">The following is a example JSON object for secure hash test results sent from the crypto module to the ACVP server. The group identified by tgId 1 is a group of AFTs. The group identified by tgId 2 is a group of MCTs. The group identified by tgId 3 is a group of LDTs.<a href="#section-8.3-8" class="pilcrow">¶</a></p>
+</div>
+<div id="_062d6fc9-8eed-40a8-8c9a-b47997b984c0">
+<div id="section-8.3-9">
+<pre class="sourcecode lang-json">{
+    "vsId": 0,
+    "algorithm": "SHA3-224",
+    "revision": "1.0",
+    "testGroups": [
+        {
+            "tgId": 1,
+            "tests": [
+                {
+                    "tcId": 1,
+                    "md": "D14A028C2A3A2BC9476102BB288234C415A2B01F828EA62AC5B3E42F"
+                },
+                {
+                    "tcId": 2,
+                    "md": "D14A028C2A3A2BC9476102BB288234C415A2B01F828EA62AC5B3E42F"
+                }
+            ]
+        },
+        {
+            "tgId": 2,
+            "tests": [
+                {
+                    "tcId": 1028,
+                    "resultsArray": [
+                        {
+                            "md": "E82B1FA3D510C2E423D03CEDF01F66C995CDD573EB63D5A33FDAE640"
+                        },
+                        {
+                            "md": "00179AE4CE57DCBD156B981A414370B5089FA8E1098A05443DF3CD62"
+                        },
+                        {
+                            "md": "8F6C7F546940352613E8389D4F4B87473A57CACD7E289A27E4F51965"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tgId": 3,
+            "tests": [
+                {
+                    "tcId": 1029,
+                    "md": "E4F8B44B32F5A25D1F4784601BF095CF5F7C6F4E9EAA1005AD19F09A"
+                }
+            ]
+        }
+    ]
+}</pre><a href="#section-8.3-9" class="pilcrow">¶</a>
+</div>
+</div>
+<div id="_7c434f25-7a8a-4d00-827a-a7edbe21ee2b">
+<p id="section-8.3-10">The following is an example JSON object response for SHAKE-128. The group identified by tgId 1 is a group of AFTs. The group identified by tgId 2 is a group of MCTs. The group identified by tgId 3 is a group of VOTs.<a href="#section-8.3-10" class="pilcrow">¶</a></p>
+</div>
+<div id="_8aea9732-a549-4b00-8926-b8560041fd45">
+<div id="section-8.3-11">
+<pre class="sourcecode lang-json">{
+    "vsId": 0,
+    "algorithm": "SHAKE-128",
+    "revision": "1.0",
+    "testGroups": [
+        {
+            "tgId": 1,
+            "tests": [
+                {
+                    "tcId": 1,
+                    "md": "D14A028C2A3A2BC9476102BB288234C4"
+                },
+                {
+                    "tcId": 2,
+                    "md": "D14A028C2A3A2BC9476102BB288234C4"
+                }
+            ]
+        },
+        {
+            "tgId": 2,
+            "tests": [
+                {
+                    "tcId": 1028,
+                    "resultsArray": [
+                        {
+                            "md": "E82B1FA3D510C2E423D03CEDF01F66C9",
+                            "outputLen": 128
+                        },
+                        {
+                            "md": "00179AE4CE57DCBD156B981A414370B5",
+                            "outputLen": 128
+                        },
+                        {
+                            "md": "8F6C7F546940352613E8389D4F4B8747",
+                            "outputLen": 128
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tgId": 3,
+            "tests": [
+                {
+                    "tcId": 1029,
+                    "md": "E4F8"
+                }
+            ]
+        }
+    ]
+}</pre><a href="#section-8.3-11" class="pilcrow">¶</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="security">
+<section id="section-9">
+      <h2 id="name-security-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<div id="_3f2e4b5a-9f6a-4b51-92f1-75011d31f14b">
+<p id="section-9-1">There are no additional security considerations outside of those outlined in the ACVP document.<a href="#section-9-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="iana">
+<section id="section-10">
+      <h2 id="name-iana-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="_f9e9017e-e60b-4c4f-be19-6fe56e20725a">
+<p id="section-10-1">This document does not require any action by IANA.<a href="#section-10-1" class="pilcrow">¶</a></p>
+</div>
+</section>
+</div>
+<div id="_normative_references">
+<section id="section-11">
+      <h2 id="name-normative-references">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
+<dl class="references">
+<dt id="RFC2119">[RFC2119]</dt>
+      <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="refContent">RFC 2119</span>, <span class="seriesInfo">IETF RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7991">[RFC7991]</dt>
+      <dd>
+<span class="refAuthor">Hoffman, P.</span>, <span class="refTitle">"The "xml2rfc" Version 3 Vocabulary"</span>, <span class="refContent">RFC 7991</span>, <span class="seriesInfo">IETF RFC 7991</span>, <span class="seriesInfo">DOI 10.17487/RFC7991</span>, <time datetime="2016-12" class="refDate">December 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7991">https://www.rfc-editor.org/info/rfc7991</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+      <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="refContent">RFC 8174</span>, <span class="seriesInfo">IETF RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="FIPS202">[FIPS202]</dt>
+      <dd>
+<span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"SHA-3 Standard — Permutation-Based Hash and Extendable-Output Functions"</span>, <span class="refContent">NIST FIPS 202</span>, <time datetime="2015-08" class="refDate">August 2015</time>. </dd>
+<dd class="break"></dd>
+<dt id="ACVP">[ACVP]</dt>
+      <dd>
+<span class="refAuthor">Fussell, B.</span>, <span class="refAuthor">Vassilev, A.</span>, and <span class="refAuthor">H. Booth</span>, <span class="refTitle">"Automatic Cryptographic Validation Protocol"</span>, <span class="refContent">ACVP</span>, <time datetime="2019-07-01" class="refDate">1 July 2019</time>. </dd>
+<dd class="break"></dd>
+<dt id="SHAVS">[SHAVS]</dt>
+      <dd>
+<span class="refTitle">"The Secure Hash Algorithm Validation System (SHAVS)"</span>, <span class="refContent">NIST SHAVS</span>. </dd>
+<dd class="break"></dd>
+<dt id="LDT">[LDT]</dt>
+    <dd>
+<span class="refTitle">"Extending NIST's CAVP Testing of Cryptographic Hash Function Implementations"</span>, <span class="refContent">LDT</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="section-appendix.a">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Christopher Celi (<span class="role">editor</span>)</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:christopher.celi@nist.gov" class="email">christopher.celi@nist.gov</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
